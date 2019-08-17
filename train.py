@@ -40,7 +40,7 @@ def read_batches(T, vocab_size):
 
 def train(text, epochs=100, save_freq=5):
 
-    text = text[0:len(text)//100]
+    text = text[0:len(text)//1000]
     # character to index and vice-versa mappings
     char_to_idx = { ch: i for (i, ch) in enumerate(sorted(list(set(text)))) }
     print("Number of unique characters: " + str(len(char_to_idx))) #75
