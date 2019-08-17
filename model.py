@@ -18,16 +18,13 @@ def build_model(batch_size, seq_len, vocab_size):
     model = Sequential()
     model.add(Embedding(vocab_size, 1024, batch_input_shape=(batch_size, seq_len)))
 
-    model.add(CuDNNLSTM(512, return_sequences=True, stateful=True))
+    model.add(CuDNNLSTM(384, return_sequences=True, stateful=True))
     model.add(Dropout(0.25))
 
-    model.add(CuDNNLSTM(512, return_sequences=True, stateful=True))
+    model.add(CuDNNLSTM(384, return_sequences=True, stateful=True))
     model.add(Dropout(0.25))
 
-    model.add(CuDNNLSTM(512, return_sequences=True, stateful=True))
-    model.add(Dropout(0.25))
-
-    model.add(CuDNNLSTM(512, return_sequences=True, stateful=True))
+    model.add(CuDNNLSTM(384, return_sequences=True, stateful=True))
     model.add(Dropout(0.25))
 
     model.add(TimeDistributed(Dense(vocab_size))) 
@@ -35,5 +32,5 @@ def build_model(batch_size, seq_len, vocab_size):
     return model
 
 if __name__ == '__main__':
-    model = build_model(256, 1024, 75)
+    model = build_model(32, 128, 75)
     model.summary()
