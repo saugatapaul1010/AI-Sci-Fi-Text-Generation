@@ -1,7 +1,7 @@
 import os
 
 from keras.models import Sequential, load_model
-from keras.layers import LSTM, Dropout, TimeDistributed, Dense, Activation, Embedding
+from keras.layers import LSTM, Dropout, TimeDistributed, Dense, Activation, Embedding, CuDNNLSTM
 
 
 MODEL_DIR = './model'
@@ -16,15 +16,24 @@ def load_weights(epoch, model):
 
 def build_model(batch_size, seq_len, vocab_size):
     model = Sequential()
-    model.add(Embedding(vocab_size, 512, batch_input_shape=(batch_size, seq_len)))
-    for i in range(3):
-        model.add(LSTM(256, return_sequences=True, stateful=True))
-        model.add(Dropout(0.2))
+    model.add(Embedding(vocab_size, 1024, batch_input_shape=(batch_size, seq_len)))
+
+    model.add(CuDNNLSTM(512, return_sequences=True, stateful=True))
+    model.add(Dropout(0.25))
+
+    model.add(CuDNNLSTM(512, return_sequences=True, stateful=True))
+    model.add(Dropout(0.25))
+
+    model.add(CuDNNLSTM(512, return_sequences=True, stateful=True))
+    model.add(Dropout(0.25))
+
+    model.add(CuDNNLSTM(512, return_sequences=True, stateful=True))
+    model.add(Dropout(0.25))
 
     model.add(TimeDistributed(Dense(vocab_size))) 
     model.add(Activation('softmax'))
     return model
 
 if __name__ == '__main__':
-    model = build_model(16, 64, 50)
+    model = build_model(256, 1024, 75)
     model.summary()
