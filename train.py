@@ -9,8 +9,8 @@ from datetime import datetime as dt
 DATA_DIR = './data'
 LOG_DIR = './logs'
 
-BATCH_SIZE = 32
-SEQ_LENGTH = 128
+BATCH_SIZE = 16
+SEQ_LENGTH = 64
 
 class TrainLogger(object):
     def __init__(self, file):
