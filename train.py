@@ -38,7 +38,7 @@ def read_batches(T, vocab_size):
                 Y[batch_idx, i, T[batch_chars * batch_idx + start + i + 1]] = 1
         yield X, Y
 
-def train(text, epochs=100, save_freq=1):
+def train(text, epochs=100, save_freq=5):
 
     # character to index and vice-versa mappings
     char_to_idx = { ch: i for (i, ch) in enumerate(sorted(list(set(text)))) }
@@ -91,8 +91,8 @@ def train(text, epochs=100, save_freq=1):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train the model on some text.')
     parser.add_argument('--input', default='internet_archive_scifi_v3.txt', help='Name of the text file to train from.')
-    parser.add_argument('--epochs', type=int, default=100, help='Number of epochs to train for.')
-    parser.add_argument('--freq', type=int, default=10, help='Checkpoint save frequency.')
+    parser.add_argument('--epochs', type=int, default=150, help='Number of epochs to train for.')
+    parser.add_argument('--freq', type=int, default=5, help='Checkpoint save frequency.')
     args = parser.parse_args()
 
     if not os.path.exists(LOG_DIR):
