@@ -1,7 +1,7 @@
 import os
 
 from keras.models import Sequential, load_model
-from keras.layers import LSTM, Dropout, TimeDistributed, Dense, Activation, Embedding, CuDNNLSTM
+from keras.layers import LSTM, Dropout, TimeDistributed, Dense, Activation, Embedding, CuDNNLSTM, Bidirectional
 
 
 MODEL_DIR = './model'
@@ -18,13 +18,13 @@ def build_model(batch_size, seq_len, vocab_size):
     model = Sequential()
     model.add(Embedding(vocab_size, 512, batch_input_shape=(batch_size, seq_len)))
 
-    model.add(CuDNNLSTM(256, return_sequences=True, stateful=True))
+    model.add(LSTM(256, return_sequences=True, stateful=True))
     model.add(Dropout(0.20))
 
-    model.add(CuDNNLSTM(256, return_sequences=True, stateful=True))
+    model.add(LSTM(256, return_sequences=True, stateful=True))
     model.add(Dropout(0.20))
 
-    model.add(CuDNNLSTM(256, return_sequences=True, stateful=True))
+    model.add(LSTM(256, return_sequences=True, stateful=True))
     model.add(Dropout(0.20))
 
     model.add(TimeDistributed(Dense(vocab_size))) 
@@ -32,5 +32,5 @@ def build_model(batch_size, seq_len, vocab_size):
     return model
 
 if __name__ == '__main__':
-    model = build_model(16, 64, 75)
+    model = build_model(32, 128, 75)
     model.summary()

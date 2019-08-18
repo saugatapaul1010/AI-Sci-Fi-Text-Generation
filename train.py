@@ -9,8 +9,8 @@ from datetime import datetime as dt
 DATA_DIR = './data'
 LOG_DIR = './logs'
 
-BATCH_SIZE = 16
-SEQ_LENGTH = 64
+BATCH_SIZE = 32
+SEQ_LENGTH = 128
 
 class TrainLogger(object):
     def __init__(self, file):
@@ -40,7 +40,7 @@ def read_batches(T, vocab_size):
 
 def train(text, epochs=100, save_freq=5):
 
-    text = text[0:len(text)//1000]
+    text = text[0:len(text)//100]
     # character to index and vice-versa mappings
     char_to_idx = { ch: i for (i, ch) in enumerate(sorted(list(set(text)))) }
     print("Number of unique characters: " + str(len(char_to_idx))) #75
@@ -91,7 +91,7 @@ def train(text, epochs=100, save_freq=5):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train the model on some text.')
-    parser.add_argument('--input', default='internet_archive_scifi_v3.txt', help='Name of the text file to train from.')
+    parser.add_argument('--input', default='input.txt', help='Name of the text file to train from.')
     parser.add_argument('--epochs', type=int, default=150, help='Number of epochs to train for.')
     parser.add_argument('--freq', type=int, default=5, help='Checkpoint save frequency.')
     args = parser.parse_args()
