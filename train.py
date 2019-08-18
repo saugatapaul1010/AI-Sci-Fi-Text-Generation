@@ -9,8 +9,8 @@ from datetime import datetime as dt
 DATA_DIR = './data'
 LOG_DIR = './logs'
 
-BATCH_SIZE = 32
-SEQ_LENGTH = 128
+BATCH_SIZE = 16
+SEQ_LENGTH = 64
 
 class TrainLogger(object):
     def __init__(self, file):
@@ -38,7 +38,7 @@ def read_batches(T, vocab_size):
                 Y[batch_idx, i, T[batch_chars * batch_idx + start + i + 1]] = 1
         yield X, Y
 
-def train(text, epochs=100, save_freq=5):
+def train(text, epochs=150, save_freq=5):
 
     text = text[0:len(text)//100]
     # character to index and vice-versa mappings
@@ -73,9 +73,6 @@ def train(text, epochs=100, save_freq=5):
         losses, accs = [], []
 
         for i, (X, Y) in enumerate(read_batches(T, vocab_size)):
-            
-            #print(X);
-
             loss, acc = model.train_on_batch(X, Y)
             print('Batch {}: loss = {}, acc = {}'.format(i + 1, loss, acc))
             losses.append(loss)
