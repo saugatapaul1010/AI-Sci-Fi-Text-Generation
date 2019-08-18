@@ -91,7 +91,7 @@ def train(text, epochs=100, save_freq=5):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train the model on some text.')
-    parser.add_argument('--input', default='input.txt', help='Name of the text file to train from.')
+    parser.add_argument('--input', default='internet_archive_scifi_v3.txt', help='Name of the text file to train from.')
     parser.add_argument('--epochs', type=int, default=150, help='Number of epochs to train for.')
     parser.add_argument('--freq', type=int, default=5, help='Checkpoint save frequency.')
     args = parser.parse_args()
