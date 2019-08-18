@@ -26,14 +26,14 @@ class TrainLogger(object):
             f.write(s)
 
 def read_batches(T, vocab_size):
-    length = T.shape[0]; #149,326,361
-    batch_chars = int(length / BATCH_SIZE); # 583,306
+    length = T.shape[0]; #1,493,263
+    batch_chars = int(length / BATCH_SIZE); # 46,664
 
-    for start in range(0, batch_chars - SEQ_LENGTH, SEQ_LENGTH): # (0, 583306, 1024)
-        X = np.zeros((BATCH_SIZE, SEQ_LENGTH)) # 256X512
-        Y = np.zeros((BATCH_SIZE, SEQ_LENGTH, vocab_size)) # 256X1024X75
-        for batch_idx in range(0, BATCH_SIZE): # (0,256)
-            for i in range(0, SEQ_LENGTH): #(0,1024)
+    for start in range(0, batch_chars - SEQ_LENGTH, SEQ_LENGTH): # (0, 46664, 128)
+        X = np.zeros((BATCH_SIZE, SEQ_LENGTH)) # 32X128
+        Y = np.zeros((BATCH_SIZE, SEQ_LENGTH, vocab_size)) # 32X128X75
+        for batch_idx in range(0, BATCH_SIZE): # (0,32)
+            for i in range(0, SEQ_LENGTH): #(0,128)
                 X[batch_idx, i] = T[batch_chars * batch_idx + start + i] # 
                 Y[batch_idx, i, T[batch_chars * batch_idx + start + i + 1]] = 1
         yield X, Y
