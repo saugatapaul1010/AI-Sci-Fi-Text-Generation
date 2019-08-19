@@ -32,5 +32,5 @@ def build_model(batch_size, seq_len, vocab_size):
     return model
 
 if __name__ == '__main__':
-    model = build_model(16, 64, 75)
+    model = build_model(32, 128, 75)
     model.summary()

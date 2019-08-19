@@ -9,8 +9,8 @@ from datetime import datetime as dt
 DATA_DIR = './data'
 LOG_DIR = './logs'
 
-BATCH_SIZE = 16
-SEQ_LENGTH = 64
+BATCH_SIZE = 32
+SEQ_LENGTH = 128
 
 class TrainLogger(object):
     def __init__(self, file):
@@ -40,7 +40,7 @@ def read_batches(T, vocab_size):
 
 def train(text, epochs=150, save_freq=5):
 
-    text = text[0:len(text)//100]
+    text = text[0:len(text)//500]
     # character to index and vice-versa mappings
     char_to_idx = { ch: i for (i, ch) in enumerate(sorted(list(set(text)))) }
     print("Number of unique characters: " + str(len(char_to_idx))) #75
