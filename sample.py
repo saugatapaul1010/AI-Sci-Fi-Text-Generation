@@ -23,15 +23,18 @@ def build_sample_model(vocab_size):
     model.add(Activation('softmax'))
     return model
 
-def sample(epoch, header, num_chars):
-    with open(os.path.join(DATA_DIR, 'char_to_idx.json')) as f:
+def sample(epoch, header, num_chars, docname):
+    if(docname.endswith("txt")):
+        docname=docname[:-4]
+
+    with open(os.path.join(DATA_DIR, 'char_to_idx_{}.json'.format(docname))) as f:
         char_to_idx = json.load(f)
     idx_to_char = { i: ch for (ch, i) in char_to_idx.items() }
     vocab_size = len(char_to_idx)
 
     model = build_sample_model(vocab_size)
-    load_weights(epoch, model)
-    model.save(os.path.join(MODEL_DIR, 'model.{}.h5'.format(epoch)))
+    load_weights(epoch, model, docname)
+    model.save(os.path.join(MODEL_DIR, 'model.{}_{}.h5'.format(model,epoch)))
 
     sampled = [char_to_idx[c] for c in header]
     print(sampled)
@@ -51,9 +54,10 @@ def sample(epoch, header, num_chars):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Sample some text from the trained model.')
-    parser.add_argument('epoch', type=int, help='epoch checkpoint to sample from')
+    parser.add_argument('--epoch', type=int, help='epoch checkpoint to sample from')
     parser.add_argument('--seed', default='', help='initial seed for the generated text')
     parser.add_argument('--len', type=int, default=512, help='number of characters to sample (default 512)')
+    parser.add_argument('--model', type=str, default=512, help='The model you want the output from.')
     args = parser.parse_args()
 
-    print(sample(args.epoch, args.seed, args.len))
+    print(sample(args.epoch, args.seed, args.len, args.model))

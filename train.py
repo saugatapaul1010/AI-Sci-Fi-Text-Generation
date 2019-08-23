@@ -25,27 +25,28 @@ class TrainLogger(object):
         with open(self.file, 'a') as f:
             f.write(s)
 
+#Default values are provided for shakespear scripts
 def read_batches(T, vocab_size):
-    length = T.shape[0]; #1,493,263
-    batch_chars = int(length / BATCH_SIZE); # 46,664
+    length = T.shape[0]; #1115393
+    batch_chars = int(length / BATCH_SIZE); # 8714
 
-    for start in range(0, batch_chars - SEQ_LENGTH, SEQ_LENGTH): # (0, 46664, 128)
+    for start in range(0, batch_chars - SEQ_LENGTH, SEQ_LENGTH): # (0, 8714, 128)
         X = np.zeros((BATCH_SIZE, SEQ_LENGTH)) # 32X128
-        Y = np.zeros((BATCH_SIZE, SEQ_LENGTH, vocab_size)) # 32X128X75
+        Y = np.zeros((BATCH_SIZE, SEQ_LENGTH, vocab_size)) # 32X128X64
         for batch_idx in range(0, BATCH_SIZE): # (0,32)
             for i in range(0, SEQ_LENGTH): #(0,128)
                 X[batch_idx, i] = T[batch_chars * batch_idx + start + i] # 
                 Y[batch_idx, i, T[batch_chars * batch_idx + start + i + 1]] = 1
         yield X, Y
 
-def train(text, epochs=150, save_freq=5):
-
-    text = text[0:len(text)//500]
+def train(text, epochs=150, save_freq=5, docname=None):
+    docname = docname[:-4] #Remove .txt from file name
+    text = text[0:len(text)//50]
     # character to index and vice-versa mappings
     char_to_idx = { ch: i for (i, ch) in enumerate(sorted(list(set(text)))) }
     print("Number of unique characters: " + str(len(char_to_idx))) #75
 
-    with open(os.path.join(DATA_DIR, 'char_to_idx.json'), 'w') as f:
+    with open(os.path.join(DATA_DIR, 'char_to_idx_{}.json'.format(docname)), 'w') as f:
         json.dump(char_to_idx, f)
 
     idx_to_char = { i: ch for (ch, i) in char_to_idx.items() }
@@ -64,7 +65,7 @@ def train(text, epochs=150, save_freq=5):
 
     steps_per_epoch = (len(text) / BATCH_SIZE - 1) / SEQ_LENGTH  
 
-    log = TrainLogger('training_log.csv')
+    log = TrainLogger('training_log_{}.csv'.format(docname))
 
     for epoch in range(epochs):
         st = dt.now()
@@ -83,17 +84,17 @@ def train(text, epochs=150, save_freq=5):
         print("Time taken to run epoch {} = {}".format(epoch+1,dt.now()-st))
 
         if (epoch + 1) % save_freq == 0:
-            save_weights(epoch + 1, model)
-            print('Saved checkpoint to', 'weights.{}.h5'.format(epoch + 1))
+            save_weights(epoch + 1, model, docname)
+            print('Saved checkpoint to', 'weights.{}_{}.h5'.format(docname,epoch + 1))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train the model on some text.')
-    parser.add_argument('--input', default='internet_archive_scifi_v3.txt', help='Name of the text file to train from.')
+    parser.add_argument('--input', default='input.txt', help='Name of the text file to train from.')
     parser.add_argument('--epochs', type=int, default=150, help='Number of epochs to train for.')
-    parser.add_argument('--freq', type=int, default=5, help='Checkpoint save frequency.')
+    parser.add_argument('--freq', type=int, default=10, help='Checkpoint save frequency.')
     args = parser.parse_args()
 
     if not os.path.exists(LOG_DIR):
         os.makedirs(LOG_DIR)
 
-    train(open(os.path.join(DATA_DIR, args.input)).read(), args.epochs, args.freq)
+    train(open(os.path.join(DATA_DIR, args.input)).read(), args.epochs, args.freq, args.input)
