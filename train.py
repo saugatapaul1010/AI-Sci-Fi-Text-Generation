@@ -41,7 +41,7 @@ def read_batches(T, vocab_size):
 
 def train(text, epochs=150, save_freq=5, docname=None):
     docname = docname[:-4] #Remove .txt from file name
-    text = text[0:len(text)//50]
+    #text = text[0:len(text)//50]
     # character to index and vice-versa mappings
     char_to_idx = { ch: i for (i, ch) in enumerate(sorted(list(set(text)))) }
     print("Number of unique characters: " + str(len(char_to_idx))) #75
